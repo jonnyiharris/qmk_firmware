@@ -100,6 +100,7 @@ void dynamic_macro_play(
     layer_clear();
 
     while (macro_buffer != macro_end) {
+	wait_ms(20);
         process_record(macro_buffer);
         macro_buffer += direction;
     }
