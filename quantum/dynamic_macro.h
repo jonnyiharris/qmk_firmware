@@ -241,6 +241,7 @@ bool process_record_dynamic_macro(uint16_t keycode, keyrecord_t *record)
         if (!record->event.pressed) {
             switch (keycode) {
             case DYN_REC_START1:
+            case DYN_REC_STOP:
                 dynamic_macro_record_start(&macro_pointer, macro_buffer);
                 macro_id = 1;
                 return false;
@@ -255,7 +256,7 @@ bool process_record_dynamic_macro(uint16_t keycode, keyrecord_t *record)
                 dynamic_macro_play(r_macro_buffer, r_macro_end, -1);
                 return false;
             }
-        }
+	}
     } else {
         /* A macro is being recorded right now. */
         switch (keycode) {
@@ -272,6 +273,7 @@ bool process_record_dynamic_macro(uint16_t keycode, keyrecord_t *record)
                     dynamic_macro_record_end(r_macro_buffer, macro_pointer, -1, &r_macro_end);
                     break;
                 }
+            } else { /* Unset the macro_id when keypress is complete. This means that the release will not trigger another macro start. */
                 macro_id = 0;
             }
             return false;

@@ -24,6 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PERMISSIVE_HOLD
 #define IGNORE_MOD_TAP_INTERRUPT
 
+#define LEADER_TIMEOUT 1000
+#define LEADER_PER_KEY_TIMING
+
 #include "config_common.h"
 
 #define AUTO_SHIFT_TIMEOUT 140
