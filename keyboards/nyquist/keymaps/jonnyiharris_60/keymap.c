@@ -1,5 +1,4 @@
 #include QMK_KEYBOARD_H
-#include "pointing_device.h"
 
 extern keymap_config_t keymap_config;
 
@@ -7,45 +6,32 @@ extern keymap_config_t keymap_config;
 // The underscores don't mean anything - you can have a layer called STUFF or any other name.
 // Layer names don't all need to be of the same length, obviously, and you can also skip them
 // entirely and just use numbers.
-#define _COLEMAK 0
-#define _VIM 1
-#define _NUM 2
+#define COLEMAK 0
+#define NUM 1
+#define VIM 2
 
 enum custom_keycodes {
-  COLEMAK = SAFE_RANGE,
-  BS_MS_L,
-  BS_MS_R,
-  BS_MS_U,
-  BS_MS_D,
-  BS_WH_U,
-  BS_WH_D,
-  BS_WH_L,
-  BS_WH_R,
-  BS_BTN1,
-  BS_BTN2,
-  BS_BTN3,
-  BS_RST,
-  BS_FINE,
-  DYNAMIC_MACRO_RANGE,
+  DYNAMIC_MACRO_RANGE = SAFE_RANGE,
 };
 
 #include "dynamic_macro.h"
 
 enum tapdance_codes {
-  TD_F1 = 0,
-  TD_F2,
-  TD_F3,
-  TD_F4,
-  TD_F5,
-  TD_F6,
-  TD_F7,
-  TD_F8,
-  TD_F9,
-  TD_F10,
-  TD_F11,
-  TD_F12,
+  F1_PAUS = 0,
+  F2_RCTL,
+  F3_NO,
+  F4_NO,
+  F5_PRSC,
+  F6_NO,
+  F7_MPRV,
+  F8_MPLY,
+  F9_MNXT,
+  F10_MUTE,
+  F11_VOLD,
+  F12_VOLU,
 };
 
+/*
 #define BS_FACTOR_NUM 1
 #define BS_FACTOR_DEN 2
 #define MAX_DELTA 127
@@ -63,94 +49,105 @@ const keypos_t hand_swap_config[MATRIX_ROWS][MATRIX_COLS] = {
 	{{0, 3}, {1, 3}, {2, 3}, {3, 3}, {4, 3}, {5, 3}},
 	{{0, 4}, {1, 4}, {2, 4}, {3, 4}, {4, 4}, {5, 4}},
 };
+*/
 
 // Fillers to make layering more clear
 #define _______ KC_TRNS
 #define X KC_NO
-#define WD_BSPC LCTL(KC_BSPC)
-#define WD_DEL LCTL(KC_DEL)
-#define COPY LCTL(KC_INS)
-#define PASTE LSFT(KC_INS)
-#define WD_RGHT LCTL(KC_RGHT)
-#define WD_LEFT LCTL(KC_LEFT)
-#define M_START DYN_REC_START1
+#define M_REC   DYN_REC_START1
 #define M_STOP  DYN_REC_STOP
 #define M_PLAY  DYN_MACRO_PLAY1
-#define VIM_TAB LT(_VIM,KC_TAB)
-#define NUM_ENT LT(_NUM,KC_ENT)
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TD_F1] = ACTION_TAP_DANCE_DOUBLE(KC_F1, KC_PAUS),
-  [TD_F2] = ACTION_TAP_DANCE_DOUBLE(KC_F2, KC_RCTL),
-  [TD_F3] = ACTION_TAP_DANCE_DOUBLE(KC_F3, KC_NO),
-  [TD_F4] = ACTION_TAP_DANCE_DOUBLE(KC_F4, KC_NO),
-  [TD_F5] = ACTION_TAP_DANCE_DOUBLE(KC_F5, KC_NO),
-  [TD_F6] = ACTION_TAP_DANCE_DOUBLE(KC_F6, KC_PSCR),
-  [TD_F7] = ACTION_TAP_DANCE_DOUBLE(KC_F7, KC_MPRV),
-  [TD_F8] = ACTION_TAP_DANCE_DOUBLE(KC_F8, KC_MPLY),
-  [TD_F9] = ACTION_TAP_DANCE_DOUBLE(KC_F9, KC_MNXT),
-  [TD_F10] = ACTION_TAP_DANCE_DOUBLE(KC_F10, KC_MUTE),
-  [TD_F11] = ACTION_TAP_DANCE_DOUBLE(KC_F11, KC_VOLD),
-  [TD_F12] = ACTION_TAP_DANCE_DOUBLE(KC_F12, KC_VOLU),
+  [F1_PAUS]   = ACTION_TAP_DANCE_DOUBLE(KC_F1, KC_PAUS),
+  [F2_RCTL]   = ACTION_TAP_DANCE_DOUBLE(KC_F2, KC_RCTL),
+  [F3_NO]     = ACTION_TAP_DANCE_DOUBLE(KC_F3, KC_NO),
+  [F4_NO]     = ACTION_TAP_DANCE_DOUBLE(KC_F4, KC_NO),
+  [F5_PRSC]   = ACTION_TAP_DANCE_DOUBLE(KC_F5, KC_PSCR),
+  [F6_NO]     = ACTION_TAP_DANCE_DOUBLE(KC_F6, KC_NO),  
+  [F7_MPRV]   = ACTION_TAP_DANCE_DOUBLE(KC_F7, KC_MPRV),
+  [F8_MPLY]   = ACTION_TAP_DANCE_DOUBLE(KC_F8, KC_MPLY),
+  [F9_MNXT]   = ACTION_TAP_DANCE_DOUBLE(KC_F9,  KC_MNXT),
+  [F10_MUTE]  = ACTION_TAP_DANCE_DOUBLE(KC_F10, KC_MUTE),
+  [F11_VOLD]  = ACTION_TAP_DANCE_DOUBLE(KC_F11, KC_VOLD),
+  [F12_VOLU]  = ACTION_TAP_DANCE_DOUBLE(KC_F12, KC_VOLU),
 };
 
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-[_COLEMAK] = LAYOUT( \
-  X,             X,            X,            X,            X,            X,       X,       X,            X,            X,            X,            X,       \
-  KC_GRV,        KC_Q,         KC_W,         KC_F,         KC_P,         KC_G,    KC_J,    KC_L,         KC_U,         KC_Y,         KC_SCLN,      KC_BSLS, \
-  KC_ESC,        LSFT_T(KC_A), LGUI_T(KC_R), LALT_T(KC_S), LCTL_T(KC_T), KC_D,    KC_H,    LCTL_T(KC_N), LALT_T(KC_E), LGUI_T(KC_I), LSFT_T(KC_O), KC_QUOT, \
-  KC_LBRC,       KC_Z,         KC_X,         KC_C,         KC_V,         KC_B,    KC_K,    KC_M,         KC_COMM,      KC_DOT,       KC_SLSH,      KC_RBRC, \
-  M_START,       M_STOP,       M_PLAY,       SH_MON,       VIM_TAB,      KC_BSPC, KC_SPC,  NUM_ENT,      SH_MON,       KC_DEL,       KC_MINS,      KC_EQL  \
+[COLEMAK] = LAYOUT( \
+  KC_TAB,         KC_Q,           KC_W,           KC_F,           KC_P,           KC_G,           KC_J,           KC_L,           KC_U,           KC_Y,           KC_SCLN,        KC_BSPC,        \
+  OSL(NUM),       LT(VIM,KC_A),   LGUI_T(KC_R),   LALT_T(KC_S),   LCTL_T(KC_T),   KC_D,           KC_H,           RCTL_T(KC_N),   RALT_T(KC_E),   RGUI_T(KC_I),   LT(VIM,KC_O),   OSL(NUM),       \
+  KC_ESC,         KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_K,           KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        KC_ENT,         \
+  KC_DQUO,        KC_LPRN,        KC_LBRC,        KC_LCBR,        M_PLAY,         OSM(MOD_LSFT),  KC_SPC,         KC_LEAD,        KC_RCBR,        KC_RBRC,        KC_RPRN,        KC_QUOT,        \
+  X,              X,              X,              X,              X,              X,              X,              X,              X,              X,              X,              X               \
 ),
 
-[_VIM] = LAYOUT( \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END,  _______, _______, \
-  _______, BS_RST,  BS_BTN1, BS_BTN3, BS_BTN2, BS_FINE, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______, \
-  _______, _______, _______, COPY,    PASTE,   _______, BS_MS_L, BS_MS_D, BS_MS_U, BS_MS_R, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
+[NUM] = LAYOUT( \
+  KC_PLUS,        KC_UNDS,        KC_AMPR,        KC_ASTR,        KC_LPRN,        KC_TILD,        KC_GRV,         KC_7,           KC_8,           KC_9,           KC_MINS,        KC_EQL,         \
+  _______,        KC_RPRN,        KC_DLR,         KC_PERC,        KC_CIRC,        X,              X,              KC_4,           KC_5,           KC_6,           KC_0,           _______,        \
+  _______,        KC_PIPE,        KC_EXLM,        KC_AT,          KC_HASH,        X,              X,              KC_1,           KC_2,           KC_3,           KC_BSLS,        _______,        \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______         \
 ),
+/*
+[NUM] = LAYOUT( \
+  KC_TILD,        KC_EXLM,        KC_AT,          KC_HASH,        KC_DLR,         KC_PERC,        KC_CIRC,        KC_AMPR,        KC_ASTR,        KC_LPRN,        KC_RPRN,        KC_DQUO,        \
+  KC_GRV,         KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           KC_QUOT,        \
+  _______,        KC_PIPE,        KC_PLUS,        KC_UNDS,        KC_LCBR,        KC_RCBR,        KC_LBRC,        KC_RBRC,        KC_MINS,        KC_EQL,         KC_BSLS,        _______,        \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______         \
+),
+*/
+/*
+[NUM] = LAYOUT( \
+  KC_TILD,        KC_EXLM,        KC_AT,          KC_HASH,        KC_DLR,         KC_PIPE,        KC_GRV,         KC_1,           KC_2,           KC_3,           KC_4,           KC_BSLS,        \
+  KC_TRNS,        KC_PERC,        KC_CIRC,        KC_AMPR,        KC_ASTR,        KC_DQUO,        KC_QUOT,        KC_5,           KC_6,           KC_7,           KC_8,           KC_TRNS,        \
+  KC_LCBR,        KC_LPRN,        KC_RPRN,        KC_UNDS,        KC_PLUS,        KC_RCBR,        KC_LBRC,        KC_9,           KC_0,           KC_MINS,        KC_EQL,         KC_RBRC,        \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______         \
+),
+*/
 
-
-[_NUM] = LAYOUT( \
-  _______,    _______,    _______,    _______,    _______,    _______,    _______, _______, _______, _______, _______, _______, \
-  TD(TD_F7),  TD(TD_F8),  TD(TD_F9),  TD(TD_F10), TD(TD_F11), TD(TD_F12), _______, KC_7,    KC_8,    KC_9,    _______, _______, \
-  _______,    KC_LSFT,    KC_LGUI,    KC_LALT,    KC_LCTL,    _______,    _______, KC_4,    KC_5,    KC_6,    KC_0,    _______, \
-  TD(TD_F1),  TD(TD_F2),  TD(TD_F3),  TD(TD_F4),  TD(TD_F5),  TD(TD_F6),  _______, KC_1,    KC_2,    KC_3,    _______, _______, \
-  _______,    _______,    _______,    _______,    _______,    _______,    _______, _______, _______, _______, _______, _______  \
+[VIM] = LAYOUT( \
+  TD(F7_MPRV),    TD(F8_MPLY),    TD(F9_MNXT),    TD(F10_MUTE),   TD(F11_VOLD),   TD(F12_VOLU),   KC_HOME,        KC_PGDN,        KC_PGUP,        KC_END,         _______,        KC_DEL,         \
+  _______,        KC_TRNS,        KC_LGUI,        KC_LALT,        KC_LCTL,        _______,        KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        KC_TRNS,        _______,        \
+  TD(F1_PAUS),    TD(F2_RCTL),    TD(F3_NO),      TD(F4_NO),      TD(F5_PRSC),    TD(F6_NO),      _______,        LCTL(KC_INS),   LSFT(KC_INS),   M_PLAY,         M_REC,          M_STOP,         \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______         \
 ),
 
 /*
-[_COLEMAK] = LAYOUT( \
-  X,             X,            X,       X,       X,       X,       X,       X,               X,       X,       X,            X,       \
-  ALT_T(KC_GRV), KC_Q,         KC_W,    KC_F,    KC_P,    KC_G,    KC_J,    KC_L,            KC_U,    KC_Y,    KC_SCLN,      KC_BSLS, \
-  CTL_T(KC_ESC), LSFT_T(KC_A), KC_R,    KC_S,    KC_T,    KC_D,    KC_H,    KC_N,            KC_E,    KC_I,    RSFT_T(KC_O), KC_QUOT, \
-  KC_LGUI,       KC_Z,         KC_X,    KC_C,    KC_V,    KC_B,    KC_K,    KC_M,            KC_COMM, KC_DOT,  KC_SLSH,      KC_MINS, \
-  SH_MON,        X,            KC_LBRC, KC_RBRC, NUM_TAB, VIM_ENT, KC_SPC,  KC_BSPC,         X,       X,       KC_RCTL,      KC_EQL  \
+[COLEMAK] = LAYOUT( \
+  X,              X,              X,              X,              X,              X,              X,              X,              X,              X,              X,              X,       \
+  ALT_T(KC_GRV),  KC_Q,           KC_W,           KC_F,           KC_P,           KC_G,           KC_J,           KC_L,           KC_U,           KC_Y,           KC_SCLN,        KC_BSLS, \
+  CTL_T(KC_ESC),  LSFT_T(KC_A),   KC_R,           KC_S,           KC_T,           KC_D,           KC_H,           KC_N,           KC_E,           KC_I,           RSFT_T(KC_O),   KC_QUOT, \
+  KC_LGUI,        KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_K,           KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        KC_MINS, \
+  SH_MON,         X,              KC_LBRC,        KC_RBRC,        NUM_TAB,        VIM_ENT,        KC_SPC,         KC_BSPC,        X,              X,              KC_RCTL,        KC_EQL  \
 ),
 
-[_VIM] = LAYOUT( \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, M_START, WD_LEFT, WD_RGHT, WD_BSPC, WD_DEL,  KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_WH_D, KC_WH_U, \
-  _______, BS_RST,  BS_BTN1, BS_BTN3, BS_BTN2, BS_FINE, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, M_PLAY,  _______, \
-  _______, M_STOP,  KC_DEL,  COPY,    PASTE,   X,       BS_MS_L, BS_MS_D, BS_MS_U, BS_MS_R, _______, _______, \
-  _______, _______, _______, _______, RESET,   _______, _______, _______, _______, _______, _______, _______  \
+[VIM] = LAYOUT( \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______, \
+  _______,        M_START,        WD_LEFT,        WD_RGHT,        WD_BSPC,        WD_DEL,         KC_HOME,        KC_PGDN,        KC_PGUP,        KC_END,         KC_WH_D,        KC_WH_U, \
+  _______,        BS_RST,         BS_BTN1,        BS_BTN3,        BS_BTN2,        BS_FINE,        KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        M_PLAY,         _______, \
+  _______,        M_STOP,         KC_DEL,         COPY,           PASTE,          X,              BS_MS_L,        BS_MS_D,        BS_MS_U,        BS_MS_R,        _______,        _______, \
+  _______,        _______,        _______,        _______,        RESET,          _______,        _______,        _______,        _______,        _______,        _______,        _______  \
 ),
 
 
-[_NUM] = LAYOUT( \
-  _______, _______,    _______,    _______,    _______,    _______,    _______, _______, _______, _______, _______, _______, \
-  _______, _______,    TD(TD_F9),  TD(TD_F10), TD(TD_F11), TD(TD_F12), KC_TAB,  KC_7,    KC_8,    KC_9,    _______, _______, \
-  _______, KC_LSFT,    TD(TD_F5),  TD(TD_F6),  TD(TD_F7),  TD(TD_F8),  KC_ENT,  KC_4,    KC_5,    KC_6,    KC_0,    _______, \
-  _______, _______,    TD(TD_F1),  TD(TD_F2),  TD(TD_F3),  TD(TD_F4),  _______, KC_1,    KC_2,    KC_3,    _______, _______, \
-  _______, _______,    _______,    _______,    _______,    _______,    _______, _______, _______, _______, _______, _______  \
+[NUM] = LAYOUT( \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______, \
+  _______,        _______,        TD(F9_NO),      TD(F10_MUTE),   TD(F11_VOLD),   TD(F12_VOLU),   KC_TAB,         KC_7,           KC_8,           KC_9,           _______,        _______, \
+  _______,        KC_LSFT,        TD(F5_PRSC),    TD(F6_MPRV),    TD(F7_MPLY),    TD(F8_MNXT),    KC_ENT,         KC_4,           KC_5,           KC_6,           KC_0,           _______, \
+  _______,        _______,        TD(F1_PAUS),    TD(F2_RCTL),    TD(F3_NO),      TD(F4_NO),      _______,        KC_1,           KC_2,           KC_3,           _______,        _______, \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______  \
 ),
 */
 };
 
+/*
 int8_t delta = MAX_DELTA;
 int16_t prev_dir = 0;
 // The below does not actually have to be a global. We only define it this way to save space.
@@ -284,15 +281,406 @@ bool process_binary_search( uint16_t keycode, keyrecord_t *record ){
   }
   return true;
 }
+*/
 
+LEADER_EXTERNS();
+uint8_t leader_last_sequence_index;
+#define MODS_SHIFT_MASK (MOD_BIT(KC_LSHIFT)|MOD_BIT(KC_RSHIFT))
+bool insert_space = true;
+
+
+void matrix_scan_user(void){
+	/* Note that while we can make two leader sequences "<leader>a" => "a"
+	 * and "<leader>ab" => "about", this is problematic, as the code will
+	 * interpret "<leader>abat" as "about at" rather than "a bat" */
+	LEADER_DICTIONARY(){
+		leading = false;
+
+		leader_last_sequence_index = 0;
+
+		/*
+     LGUI_T(KC_R),   LALT_T(KC_S),   LCTL_T(KC_T),   KC_D,           KC_H,           RCTL_T(KC_N),   RALT_T(KC_E),   RGUI_T(KC_I),   LT(VIM,KC_O),   OSL(NUM),  \
+     */
+		switch (leader_sequence[leader_last_sequence_index]) {
+			/*case KC_A:*/
+			case LT(VIM,KC_A):
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_D:
+						SEND_STRING("and");
+						break;
+					/*case KC_N:*/
+					case RCTL_T(KC_N):
+						SEND_STRING("an");
+						break;
+					/*case KC_R:*/
+					case LGUI_T(KC_R):
+						SEND_STRING("are");
+						break;
+					/*case KC_S:*/
+					case LALT_T(KC_S):
+						SEND_STRING("as");
+						break;
+					/*case KC_T:*/
+					case LCTL_T(KC_T):
+						SEND_STRING("at");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			case KC_B:
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_C:
+						SEND_STRING("because");
+						break;
+					/*case KC_E:*/
+					case RALT_T(KC_E):
+						SEND_STRING("be");
+						break;
+					/*case KC_I:*/
+					case RGUI_T(KC_I):
+						SEND_STRING("being");
+						break;
+					/*case KC_N:*/
+					case RCTL_T(KC_N):
+						SEND_STRING("been");
+						break;
+					case KC_U:
+						SEND_STRING("but");
+						break;
+					case KC_Y:
+						SEND_STRING("by");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			case KC_C:
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_D:
+						SEND_STRING("could");
+						break;
+					case KC_H:
+						SEND_STRING("could have");
+						break;
+					/*case KC_N:*/
+					case RCTL_T(KC_N):
+						SEND_STRING("can");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			case KC_D:
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_D:
+						SEND_STRING("did");
+						break;
+					/*case KC_I:*/
+					case RGUI_T(KC_I):
+						SEND_STRING("doing");
+						break;
+					/*case KC_N:*/
+					case RCTL_T(KC_N):
+						SEND_STRING("done");
+						break;
+					/*case KC_O:*/
+					case LT(VIM,KC_O):
+						SEND_STRING("do");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			/*case KC_E:*/
+			case RALT_T(KC_E):
+				SEND_STRING("the");
+				break;
+			case KC_F:
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_M:
+						SEND_STRING("from");
+						break;
+					/*case KC_R:*/
+					case LGUI_T(KC_R):
+						SEND_STRING("for");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			case KC_H:
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_D:
+						SEND_STRING("had");
+						break;
+					/*case KC_E:*/
+					case RALT_T(KC_E):
+						SEND_STRING("he");
+						break;
+					case KC_M:
+						SEND_STRING("him");
+						break;
+					/*case KC_R:*/
+					case LGUI_T(KC_R):
+						SEND_STRING("her");
+						break;
+					/*case KC_S:*/
+					case LALT_T(KC_S):
+						SEND_STRING("has");
+						break;
+					case KC_V:
+						SEND_STRING("have");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			/*case KC_I:*/
+			case RGUI_T(KC_I):
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					/*case KC_N:*/
+					case RCTL_T(KC_N):
+						SEND_STRING("in");
+						break;
+					/*case KC_S:*/
+					case LALT_T(KC_S):
+						SEND_STRING("is");
+						break;
+					/*case KC_T:*/
+					case LCTL_T(KC_T):
+						SEND_STRING("it");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			case KC_J:
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_H:
+						SEND_STRING("Jonathan Harris");
+						break;
+					case RCTL_T(KC_N):
+						SEND_STRING("Jonathan");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			case KC_K:
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					/*case KC_R:*/
+					case LGUI_T(KC_R):
+						SEND_STRING("Kind regards,\nJonathan");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			case KC_M:
+				SEND_STRING("me");
+				break;
+			/*case KC_N:*/
+			case RCTL_T(KC_N):
+				SEND_STRING("not");
+				break;
+			/*case KC_O:*/
+			case LT(VIM,KC_O):
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_F:
+						SEND_STRING("of");
+						break;
+					/*case KC_N:*/
+					case RCTL_T(KC_N):
+						SEND_STRING("on");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			/*case KC_S:*/
+			case LALT_T(KC_S):
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_D:
+						SEND_STRING("should");
+						break;
+					/*case KC_E:*/
+					case RALT_T(KC_E):
+						SEND_STRING("she");
+						break;
+					case KC_H:
+						SEND_STRING("should have");
+						break;
+					/*case KC_O:*/
+					case LT(VIM,KC_O):
+						SEND_STRING("so");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			/*case KC_T:*/
+			case LCTL_T(KC_T):
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_M:
+						SEND_STRING("them");
+						break;
+					/*case KC_N:*/
+					case RCTL_T(KC_N):
+						SEND_STRING("than");
+						break;
+					/*case KC_O:*/
+					case LT(VIM,KC_O):
+						SEND_STRING("to");
+						break;
+					/*case KC_R:*/
+					case LGUI_T(KC_R):
+						SEND_STRING("there");
+						break;
+					/*case KC_S:*/
+					case LALT_T(KC_S):
+						SEND_STRING("this");
+						break;
+					/*case KC_T:*/
+					case LCTL_T(KC_T):
+						SEND_STRING("that");
+						break;
+					case KC_Y:
+						SEND_STRING("they");
+						break;
+					default:
+						leader_last_sequence_index=-1;
+						break;
+				}
+				break;
+			case KC_U:
+				SEND_STRING("us");
+				break;
+			case KC_V:
+				SEND_STRING("very");
+				break;
+			case KC_W:
+				++leader_last_sequence_index;
+				switch (leader_sequence[leader_last_sequence_index]) {
+					case KC_C:
+						SEND_STRING("which");
+						break;
+					case KC_D:
+						SEND_STRING("would");
+						break;
+					/*case KC_E:*/
+					case RALT_T(KC_E):
+						SEND_STRING("were");
+						break;
+					case KC_H:
+						SEND_STRING("would have");
+						break;
+					/*case KC_I:*/
+					case RGUI_T(KC_I):
+						SEND_STRING("with");
+						break;
+					case KC_L:
+						SEND_STRING("will");
+						break;
+					/*case KC_N:*/
+					case RCTL_T(KC_N):
+						SEND_STRING("when");
+						break;
+					/*case KC_R:*/
+					case LGUI_T(KC_R):
+						SEND_STRING("where");
+						break;
+					/*case KC_S:*/
+					case LALT_T(KC_S):
+						SEND_STRING("was");
+						break;
+					/*case KC_T:*/
+					case LCTL_T(KC_T):
+						SEND_STRING("what");
+						break;
+					default:
+						leader_last_sequence_index=1;
+						break;
+				}
+				break;
+			case KC_Y:
+				SEND_STRING("you");
+				break;
+			default:
+				leader_last_sequence_index=-1;
+				break;
+		}
+
+		leader_end();
+	}
+}
+
+void leader_start(void){
+        if ( insert_space && !(get_oneshot_mods() & MODS_SHIFT_MASK) ) tap_code(KC_SPC);
+	leader_last_sequence_index = -1;
+}
+
+
+void leader_end(void){
+	uint8_t i;
+	if (leader_last_sequence_index >= 0) {
+		tap_code(KC_SPC);
+		insert_space = false; /* So that we do not enter two spaces when two macros are called consecutively. */
+	}
+	for (i=leader_last_sequence_index+1; i<leader_sequence_size; i++){
+		/* TODO: this should really only prevent the first space, not all spaces */
+		if (leader_sequence[i] != KC_SPC) tap_code(leader_sequence[i]);
+	}
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (!process_record_dynamic_macro(keycode, record)) {
     return false;
   }
 
+/*
   if ( !process_binary_search(keycode,record) ) {
     return false;
+  }
+*/
+  if (record->event.pressed) {
+    switch (keycode) {
+      case KC_SPC: /* If the previous key was whitespace, then we don't want to insert it for the next one */
+      case KC_BSPC:
+      case KC_ENT:
+      case KC_TAB:
+	insert_space = false;
+	break;
+      case KC_LEAD:
+	/* Pressing the leader key should not have any impact on whether we insert a space */
+	break;
+      default:
+	insert_space = true;
+	break;
+    }
   }
   return true;
 }

@@ -17,16 +17,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef CONFIG_USER_H
 #define CONFIG_USER_H
-#define MASTER_RIGHT
+
+#ifndef NO_DEBUG
+#define NO_DEBUG
+#endif // !NO_DEBUG
+#if !defined(NO_PRINT) && !defined(CONSOLE_ENABLE)
+#define NO_PRINT
+#endif // !NO_PRINT
 
 #define TAPPING_TERM 200
 
 #define PERMISSIVE_HOLD
 #define IGNORE_MOD_TAP_INTERRUPT
 
+#define LEADER_TIMEOUT 600
+#define LEADER_PER_KEY_TIMING
+
 #include "config_common.h"
 
-#define AUTO_SHIFT_TIMEOUT 140
 /* Use I2C or Serial, not both */
 
 #define USE_SERIAL
@@ -34,8 +42,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* Select hand configuration */
 
-#define MASTER_LEFT
-// #define MASTER_RIGHT
+// #define MASTER_LEFT
+#define MASTER_RIGHT
 // #define EE_HANDS
 
 #undef RGBLED_NUM
