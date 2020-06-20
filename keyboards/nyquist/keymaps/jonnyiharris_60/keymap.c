@@ -10,11 +10,20 @@ extern keymap_config_t keymap_config;
 #define NUM 1
 #define VIM 2
 
+uint8_t match_leaxer_sequence(void);
+
 enum custom_keycodes {
   DYNAMIC_MACRO_RANGE = SAFE_RANGE,
+  KC_LEAX,
 };
 
 #include "dynamic_macro.h"
+
+enum leaxer_match_types {
+  LEAX_NO_MATCH = 0,
+  LEAX_MATCH,
+  LEAX_SEQ_INCOMPLETE,
+};
 
 enum tapdance_codes {
   F1_PAUS = 0,
@@ -22,10 +31,10 @@ enum tapdance_codes {
   F3_NO,
   F4_NO,
   F5_PRSC,
-  F6_NO,
-  F7_MPRV,
-  F8_MPLY,
-  F9_MNXT,
+  F6_MPRV,
+  F7_MPLY,
+  F8_MNXT,
+  F9_NO,
   F10_MUTE,
   F11_VOLD,
   F12_VOLU,
@@ -64,10 +73,10 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [F3_NO]     = ACTION_TAP_DANCE_DOUBLE(KC_F3, KC_NO),
   [F4_NO]     = ACTION_TAP_DANCE_DOUBLE(KC_F4, KC_NO),
   [F5_PRSC]   = ACTION_TAP_DANCE_DOUBLE(KC_F5, KC_PSCR),
-  [F6_NO]     = ACTION_TAP_DANCE_DOUBLE(KC_F6, KC_NO),  
-  [F7_MPRV]   = ACTION_TAP_DANCE_DOUBLE(KC_F7, KC_MPRV),
-  [F8_MPLY]   = ACTION_TAP_DANCE_DOUBLE(KC_F8, KC_MPLY),
-  [F9_MNXT]   = ACTION_TAP_DANCE_DOUBLE(KC_F9,  KC_MNXT),
+  [F6_MPRV]   = ACTION_TAP_DANCE_DOUBLE(KC_F6, KC_MPRV),  
+  [F7_MPLY]   = ACTION_TAP_DANCE_DOUBLE(KC_F7, KC_MPLY),
+  [F8_MNXT]   = ACTION_TAP_DANCE_DOUBLE(KC_F8, KC_MNXT),
+  [F9_NO]     = ACTION_TAP_DANCE_DOUBLE(KC_F9,  KC_NO),
   [F10_MUTE]  = ACTION_TAP_DANCE_DOUBLE(KC_F10, KC_MUTE),
   [F11_VOLD]  = ACTION_TAP_DANCE_DOUBLE(KC_F11, KC_VOLD),
   [F12_VOLU]  = ACTION_TAP_DANCE_DOUBLE(KC_F12, KC_VOLU),
@@ -79,16 +88,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [COLEMAK] = LAYOUT( \
   KC_TAB,         KC_Q,           KC_W,           KC_F,           KC_P,           KC_G,           KC_J,           KC_L,           KC_U,           KC_Y,           KC_SCLN,        KC_BSPC,        \
-  OSL(NUM),       LT(VIM,KC_A),   LGUI_T(KC_R),   LALT_T(KC_S),   LCTL_T(KC_T),   KC_D,           KC_H,           RCTL_T(KC_N),   RALT_T(KC_E),   RGUI_T(KC_I),   LT(VIM,KC_O),   OSL(NUM),       \
-  KC_ESC,         KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_K,           KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        KC_ENT,         \
-  KC_DQUO,        KC_LPRN,        KC_LBRC,        KC_LCBR,        M_PLAY,         OSM(MOD_LSFT),  KC_SPC,         KC_LEAD,        KC_RCBR,        KC_RBRC,        KC_RPRN,        KC_QUOT,        \
+  OSL(NUM),       KC_A,           KC_R,           KC_S,           KC_T,           KC_D,           KC_H,           KC_N,           KC_E,           KC_I,           KC_O,           OSL(NUM),       \
+  OSM(MOD_LCTL),  KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_K,           KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        OSM(MOD_RCTL),  \
+  OSM(MOD_LGUI),  OSM(MOD_LALT),  KC_LPRN,        KC_LBRC,        OSM(MOD_LSFT),  KC_ENT,         KC_SPC,         OSL(VIM),       KC_RBRC,        KC_RPRN,        OSM(MOD_RALT),  OSM(MOD_RGUI),  \
   X,              X,              X,              X,              X,              X,              X,              X,              X,              X,              X,              X               \
 ),
 
 [NUM] = LAYOUT( \
   KC_PLUS,        KC_UNDS,        KC_AMPR,        KC_ASTR,        KC_LPRN,        KC_TILD,        KC_GRV,         KC_7,           KC_8,           KC_9,           KC_MINS,        KC_EQL,         \
-  _______,        KC_RPRN,        KC_DLR,         KC_PERC,        KC_CIRC,        X,              X,              KC_4,           KC_5,           KC_6,           KC_0,           _______,        \
-  _______,        KC_PIPE,        KC_EXLM,        KC_AT,          KC_HASH,        X,              X,              KC_1,           KC_2,           KC_3,           KC_BSLS,        _______,        \
+  KC_TRNS,        KC_RPRN,        KC_DLR,         KC_PERC,        KC_CIRC,        KC_DQUO,        KC_QUOT,        KC_4,           KC_5,           KC_6,           KC_0,           KC_TRNS,        \
+  _______,        KC_PIPE,        KC_EXLM,        KC_AT,          KC_HASH,        _______,        _______,        KC_1,           KC_2,           KC_3,           KC_BSLS,        _______,        \
   _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        \
   _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______         \
 ),
@@ -112,10 +121,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
 [VIM] = LAYOUT( \
-  TD(F7_MPRV),    TD(F8_MPLY),    TD(F9_MNXT),    TD(F10_MUTE),   TD(F11_VOLD),   TD(F12_VOLU),   KC_HOME,        KC_PGDN,        KC_PGUP,        KC_END,         _______,        KC_DEL,         \
-  _______,        KC_TRNS,        KC_LGUI,        KC_LALT,        KC_LCTL,        _______,        KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        KC_TRNS,        _______,        \
-  TD(F1_PAUS),    TD(F2_RCTL),    TD(F3_NO),      TD(F4_NO),      TD(F5_PRSC),    TD(F6_NO),      _______,        LCTL(KC_INS),   LSFT(KC_INS),   M_PLAY,         M_REC,          M_STOP,         \
-  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        \
+  KC_ESC,         TD(F9_NO),      TD(F10_MUTE),   TD(F11_VOLD),   TD(F12_VOLU),   _______,        KC_HOME,        KC_PGDN,        KC_PGUP,        KC_END,         _______,        KC_DEL,         \
+  _______,        TD(F5_PRSC),    TD(F6_MPRV),    TD(F7_MPLY),    TD(F8_MNXT),    _______,        KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        _______,        _______,        \
+  KC_LCTL,        TD(F1_PAUS),    TD(F2_RCTL),    TD(F3_NO),      TD(F4_NO),      _______,        _______,        _______,        _______,        _______,        _______,        KC_RCTL,        \
+  _______,        _______,        _______,        KC_LALT,        KC_LGUI,        KC_LSFT,        KC_RSFT,        _______,        KC_RALT,        _______,        _______,        KC_INS,         \
   _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______         \
 ),
 
@@ -285,358 +294,12 @@ bool process_binary_search( uint16_t keycode, keyrecord_t *record ){
 
 LEADER_EXTERNS();
 uint8_t leader_last_sequence_index;
+int8_t leaxer_sequence_index;
+#define LEAXER_SEQUENCE_SIZE 5
+uint16_t leaxer_sequence[LEAXER_SEQUENCE_SIZE];
 #define MODS_SHIFT_MASK (MOD_BIT(KC_LSHIFT)|MOD_BIT(KC_RSHIFT))
 bool insert_space = true;
-
-
-void matrix_scan_user(void){
-	/* Note that while we can make two leader sequences "<leader>a" => "a"
-	 * and "<leader>ab" => "about", this is problematic, as the code will
-	 * interpret "<leader>abat" as "about at" rather than "a bat" */
-	LEADER_DICTIONARY(){
-		leading = false;
-
-		leader_last_sequence_index = 0;
-
-		/*
-     LGUI_T(KC_R),   LALT_T(KC_S),   LCTL_T(KC_T),   KC_D,           KC_H,           RCTL_T(KC_N),   RALT_T(KC_E),   RGUI_T(KC_I),   LT(VIM,KC_O),   OSL(NUM),  \
-     */
-		switch (leader_sequence[leader_last_sequence_index]) {
-			/*case KC_A:*/
-			case LT(VIM,KC_A):
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_D:
-						SEND_STRING("and");
-						break;
-					/*case KC_N:*/
-					case RCTL_T(KC_N):
-						SEND_STRING("an");
-						break;
-					/*case KC_R:*/
-					case LGUI_T(KC_R):
-						SEND_STRING("are");
-						break;
-					/*case KC_S:*/
-					case LALT_T(KC_S):
-						SEND_STRING("as");
-						break;
-					/*case KC_T:*/
-					case LCTL_T(KC_T):
-						SEND_STRING("at");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			case KC_B:
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_C:
-						SEND_STRING("because");
-						break;
-					/*case KC_E:*/
-					case RALT_T(KC_E):
-						SEND_STRING("be");
-						break;
-					/*case KC_I:*/
-					case RGUI_T(KC_I):
-						SEND_STRING("being");
-						break;
-					/*case KC_N:*/
-					case RCTL_T(KC_N):
-						SEND_STRING("been");
-						break;
-					case KC_U:
-						SEND_STRING("but");
-						break;
-					case KC_Y:
-						SEND_STRING("by");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			case KC_C:
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_D:
-						SEND_STRING("could");
-						break;
-					case KC_H:
-						SEND_STRING("could have");
-						break;
-					/*case KC_N:*/
-					case RCTL_T(KC_N):
-						SEND_STRING("can");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			case KC_D:
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_D:
-						SEND_STRING("did");
-						break;
-					/*case KC_I:*/
-					case RGUI_T(KC_I):
-						SEND_STRING("doing");
-						break;
-					/*case KC_N:*/
-					case RCTL_T(KC_N):
-						SEND_STRING("done");
-						break;
-					/*case KC_O:*/
-					case LT(VIM,KC_O):
-						SEND_STRING("do");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			/*case KC_E:*/
-			case RALT_T(KC_E):
-				SEND_STRING("the");
-				break;
-			case KC_F:
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_M:
-						SEND_STRING("from");
-						break;
-					/*case KC_R:*/
-					case LGUI_T(KC_R):
-						SEND_STRING("for");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			case KC_H:
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_D:
-						SEND_STRING("had");
-						break;
-					/*case KC_E:*/
-					case RALT_T(KC_E):
-						SEND_STRING("he");
-						break;
-					case KC_M:
-						SEND_STRING("him");
-						break;
-					/*case KC_R:*/
-					case LGUI_T(KC_R):
-						SEND_STRING("her");
-						break;
-					/*case KC_S:*/
-					case LALT_T(KC_S):
-						SEND_STRING("has");
-						break;
-					case KC_V:
-						SEND_STRING("have");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			/*case KC_I:*/
-			case RGUI_T(KC_I):
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					/*case KC_N:*/
-					case RCTL_T(KC_N):
-						SEND_STRING("in");
-						break;
-					/*case KC_S:*/
-					case LALT_T(KC_S):
-						SEND_STRING("is");
-						break;
-					/*case KC_T:*/
-					case LCTL_T(KC_T):
-						SEND_STRING("it");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			case KC_J:
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_H:
-						SEND_STRING("Jonathan Harris");
-						break;
-					case RCTL_T(KC_N):
-						SEND_STRING("Jonathan");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			case KC_K:
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					/*case KC_R:*/
-					case LGUI_T(KC_R):
-						SEND_STRING("Kind regards,\nJonathan");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			case KC_M:
-				SEND_STRING("me");
-				break;
-			/*case KC_N:*/
-			case RCTL_T(KC_N):
-				SEND_STRING("not");
-				break;
-			/*case KC_O:*/
-			case LT(VIM,KC_O):
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_F:
-						SEND_STRING("of");
-						break;
-					/*case KC_N:*/
-					case RCTL_T(KC_N):
-						SEND_STRING("on");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			/*case KC_S:*/
-			case LALT_T(KC_S):
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_D:
-						SEND_STRING("should");
-						break;
-					/*case KC_E:*/
-					case RALT_T(KC_E):
-						SEND_STRING("she");
-						break;
-					case KC_H:
-						SEND_STRING("should have");
-						break;
-					/*case KC_O:*/
-					case LT(VIM,KC_O):
-						SEND_STRING("so");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			/*case KC_T:*/
-			case LCTL_T(KC_T):
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_M:
-						SEND_STRING("them");
-						break;
-					/*case KC_N:*/
-					case RCTL_T(KC_N):
-						SEND_STRING("than");
-						break;
-					/*case KC_O:*/
-					case LT(VIM,KC_O):
-						SEND_STRING("to");
-						break;
-					/*case KC_R:*/
-					case LGUI_T(KC_R):
-						SEND_STRING("there");
-						break;
-					/*case KC_S:*/
-					case LALT_T(KC_S):
-						SEND_STRING("this");
-						break;
-					/*case KC_T:*/
-					case LCTL_T(KC_T):
-						SEND_STRING("that");
-						break;
-					case KC_Y:
-						SEND_STRING("they");
-						break;
-					default:
-						leader_last_sequence_index=-1;
-						break;
-				}
-				break;
-			case KC_U:
-				SEND_STRING("us");
-				break;
-			case KC_V:
-				SEND_STRING("very");
-				break;
-			case KC_W:
-				++leader_last_sequence_index;
-				switch (leader_sequence[leader_last_sequence_index]) {
-					case KC_C:
-						SEND_STRING("which");
-						break;
-					case KC_D:
-						SEND_STRING("would");
-						break;
-					/*case KC_E:*/
-					case RALT_T(KC_E):
-						SEND_STRING("were");
-						break;
-					case KC_H:
-						SEND_STRING("would have");
-						break;
-					/*case KC_I:*/
-					case RGUI_T(KC_I):
-						SEND_STRING("with");
-						break;
-					case KC_L:
-						SEND_STRING("will");
-						break;
-					/*case KC_N:*/
-					case RCTL_T(KC_N):
-						SEND_STRING("when");
-						break;
-					/*case KC_R:*/
-					case LGUI_T(KC_R):
-						SEND_STRING("where");
-						break;
-					/*case KC_S:*/
-					case LALT_T(KC_S):
-						SEND_STRING("was");
-						break;
-					/*case KC_T:*/
-					case LCTL_T(KC_T):
-						SEND_STRING("what");
-						break;
-					default:
-						leader_last_sequence_index=1;
-						break;
-				}
-				break;
-			case KC_Y:
-				SEND_STRING("you");
-				break;
-			default:
-				leader_last_sequence_index=-1;
-				break;
-		}
-
-		leader_end();
-	}
-}
+bool leaxer_pressed = false;
 
 void leader_start(void){
         if ( insert_space && !(get_oneshot_mods() & MODS_SHIFT_MASK) ) tap_code(KC_SPC);
@@ -656,7 +319,331 @@ void leader_end(void){
 	}
 }
 
+uint8_t match_leaxer_sequence(){
+  if (leaxer_sequence_index < 0) return LEAX_SEQ_INCOMPLETE;
+  switch (leaxer_sequence[0]) {
+    /*case KC_A:*/
+    case LT(VIM,KC_A):
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_D:
+          SEND_STRING("and");
+          break;
+        /*case KC_N:*/
+        case RCTL_T(KC_N):
+          SEND_STRING("an");
+          break;
+        /*case KC_R:*/
+        case LGUI_T(KC_R):
+          SEND_STRING("are");
+          break;
+        /*case KC_S:*/
+        case LALT_T(KC_S):
+          SEND_STRING("as");
+          break;
+        /*case KC_T:*/
+        case LCTL_T(KC_T):
+          SEND_STRING("at");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    case KC_B:
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_C:
+          SEND_STRING("because");
+          break;
+        /*case KC_E:*/
+        case RALT_T(KC_E):
+          SEND_STRING("be");
+          break;
+        /*case KC_I:*/
+        case RGUI_T(KC_I):
+          SEND_STRING("being");
+          break;
+        /*case KC_N:*/
+        case RCTL_T(KC_N):
+          SEND_STRING("been");
+          break;
+        case KC_U:
+          SEND_STRING("but");
+          break;
+        case KC_Y:
+          SEND_STRING("by");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    case KC_C:
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_D:
+          SEND_STRING("could");
+          break;
+        case KC_H:
+          SEND_STRING("could have");
+          break;
+        /*case KC_N:*/
+        case RCTL_T(KC_N):
+          SEND_STRING("can");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    case KC_D:
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_D:
+          SEND_STRING("did");
+          break;
+        /*case KC_I:*/
+        case RGUI_T(KC_I):
+          SEND_STRING("doing");
+          break;
+        /*case KC_N:*/
+        case RCTL_T(KC_N):
+          SEND_STRING("done");
+          break;
+        /*case KC_O:*/
+        case LT(VIM,KC_O):
+          SEND_STRING("do");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    /*case KC_E:*/
+    case RALT_T(KC_E):
+      SEND_STRING("the");
+      break;
+    case KC_F:
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_M:
+          SEND_STRING("from");
+          break;
+        /*case KC_R:*/
+        case LGUI_T(KC_R):
+          SEND_STRING("for");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    case KC_H:
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_D:
+          SEND_STRING("had");
+          break;
+        /*case KC_E:*/
+        case RALT_T(KC_E):
+          SEND_STRING("he");
+          break;
+        case KC_M:
+          SEND_STRING("him");
+          break;
+        /*case KC_R:*/
+        case LGUI_T(KC_R):
+          SEND_STRING("her");
+          break;
+        /*case KC_S:*/
+        case LALT_T(KC_S):
+          SEND_STRING("has");
+          break;
+        case KC_V:
+          SEND_STRING("have");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    /*case KC_I:*/
+    case RGUI_T(KC_I):
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        /*case KC_N:*/
+        case RCTL_T(KC_N):
+          SEND_STRING("in");
+          break;
+        /*case KC_S:*/
+        case LALT_T(KC_S):
+          SEND_STRING("is");
+          break;
+        /*case KC_T:*/
+        case LCTL_T(KC_T):
+          SEND_STRING("it");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    case KC_J:
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_H:
+          SEND_STRING("Jonathan Harris");
+          break;
+        case RCTL_T(KC_N):
+          SEND_STRING("Jonathan");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    case KC_K:
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        /*case KC_R:*/
+        case LGUI_T(KC_R):
+          SEND_STRING("Kind regards,\nJonathan");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    case KC_M:
+      SEND_STRING("me");
+      break;
+    /*case KC_N:*/
+    case RCTL_T(KC_N):
+      SEND_STRING("not");
+      break;
+    /*case KC_O:*/
+    case LT(VIM,KC_O):
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_F:
+          SEND_STRING("of");
+          break;
+        /*case KC_N:*/
+        case RCTL_T(KC_N):
+          SEND_STRING("on");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    /*case KC_S:*/
+    case LALT_T(KC_S):
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_D:
+          SEND_STRING("should");
+          break;
+        /*case KC_E:*/
+        case RALT_T(KC_E):
+          SEND_STRING("she");
+          break;
+        case KC_H:
+          SEND_STRING("should have");
+          break;
+        /*case KC_O:*/
+        case LT(VIM,KC_O):
+          SEND_STRING("so");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    /*case KC_T:*/
+    case LCTL_T(KC_T):
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_M:
+          SEND_STRING("them");
+          break;
+        /*case KC_N:*/
+        case RCTL_T(KC_N):
+          SEND_STRING("than");
+          break;
+        /*case KC_O:*/
+        case LT(VIM,KC_O):
+          SEND_STRING("to");
+          break;
+        /*case KC_R:*/
+        case LGUI_T(KC_R):
+          SEND_STRING("there");
+          break;
+        /*case KC_S:*/
+        case LALT_T(KC_S):
+          SEND_STRING("this");
+          break;
+        /*case KC_T:*/
+        case LCTL_T(KC_T):
+          SEND_STRING("that");
+          break;
+        case KC_Y:
+          SEND_STRING("they");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    case KC_U:
+      SEND_STRING("us");
+      break;
+    case KC_V:
+      SEND_STRING("very");
+      break;
+    case KC_W:
+      if (leaxer_sequence_index < 1) return LEAX_SEQ_INCOMPLETE;
+      switch (leaxer_sequence[1]) {
+        case KC_C:
+          SEND_STRING("which");
+          break;
+        case KC_D:
+          SEND_STRING("would");
+          break;
+        /*case KC_E:*/
+        case RALT_T(KC_E):
+          SEND_STRING("were");
+          break;
+        case KC_H:
+          SEND_STRING("would have");
+          break;
+        /*case KC_I:*/
+        case RGUI_T(KC_I):
+          SEND_STRING("with");
+          break;
+        case KC_L:
+          SEND_STRING("will");
+          break;
+        /*case KC_N:*/
+        case RCTL_T(KC_N):
+          SEND_STRING("when");
+          break;
+        /*case KC_R:*/
+        case LGUI_T(KC_R):
+          SEND_STRING("where");
+          break;
+        /*case KC_S:*/
+        case LALT_T(KC_S):
+          SEND_STRING("was");
+          break;
+        /*case KC_T:*/
+        case LCTL_T(KC_T):
+          SEND_STRING("what");
+          break;
+        default:
+	  return LEAX_NO_MATCH;
+      }
+      break;
+    case KC_Y:
+      SEND_STRING("you");
+      break;
+    default:
+      return LEAX_NO_MATCH;
+  }
+  return LEAX_MATCH;
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  uint8_t i;
   if (!process_record_dynamic_macro(keycode, record)) {
     return false;
   }
@@ -667,6 +654,37 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 */
   if (record->event.pressed) {
+    if (leaxer_pressed){
+      leaxer_pressed=false;
+      ++leaxer_sequence_index;
+      if (leaxer_sequence_index < LEAXER_SEQUENCE_SIZE){
+        leaxer_sequence[leaxer_sequence_index] = keycode;
+	switch (match_leaxer_sequence()) {
+	  case LEAX_MATCH:
+            tap_code(KC_SPC);
+            leaxer_pressed = false;
+	    leaxer_sequence_index = -1;
+            insert_space = false; /* So that we do not enter two spaces when two macros are called consecutively. */
+	    return false;
+	  case LEAX_NO_MATCH:
+            for (i=0; i<=leaxer_sequence_index; i++){
+              tap_code(leaxer_sequence[i]);
+            }
+            leaxer_pressed = false;
+	    leaxer_sequence_index = -1;
+	    break;
+	  case LEAX_SEQ_INCOMPLETE:
+	    /* do nothing. We need to wait for more characters. */
+	    return false;
+	}
+      } else {
+        for (i=0; i<leaxer_sequence_index; i++){
+          tap_code(leaxer_sequence[i]);
+        }
+        leaxer_pressed = false;
+     }
+    }
+
     switch (keycode) {
       case KC_SPC: /* If the previous key was whitespace, then we don't want to insert it for the next one */
       case KC_BSPC:
@@ -674,6 +692,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       case KC_TAB:
 	insert_space = false;
 	break;
+      case KC_LEAX:
+        if ( insert_space && !(get_oneshot_mods() & MODS_SHIFT_MASK) ) tap_code(KC_SPC);
+	/* Pressing the leader key should not have any impact on whether we insert a space */
+	leaxer_pressed = true;
+	leaxer_sequence_index = -1;
+	return false;
       case KC_LEAD:
 	/* Pressing the leader key should not have any impact on whether we insert a space */
 	break;
@@ -681,6 +705,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	insert_space = true;
 	break;
     }
+
   }
   return true;
 }
