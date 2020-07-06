@@ -88,9 +88,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [COLEMAK] = LAYOUT( \
   KC_TAB,         KC_Q,           KC_W,           KC_F,           KC_P,           KC_G,           KC_J,           KC_L,           KC_U,           KC_Y,           KC_SCLN,        KC_BSPC,        \
-  OSL(NUM),       KC_A,           KC_R,           KC_S,           KC_T,           KC_D,           KC_H,           KC_N,           KC_E,           KC_I,           KC_O,           OSL(NUM),       \
-  OSM(MOD_LCTL),  KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_K,           KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        OSM(MOD_RCTL),  \
-  OSM(MOD_LGUI),  OSM(MOD_LALT),  KC_LPRN,        KC_LBRC,        OSM(MOD_LSFT),  KC_ENT,         KC_SPC,         OSL(VIM),       KC_RBRC,        KC_RPRN,        OSM(MOD_RALT),  OSM(MOD_RGUI),  \
+  OSM(MOD_LCTL),  KC_A,           KC_R,           KC_S,           KC_T,           KC_D,           KC_H,           KC_N,           KC_E,           KC_I,           KC_O,           OSM(MOD_RCTL),  \
+  OSM(MOD_LGUI),  KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_K,           KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        OSM(MOD_RGUI),  \
+  OSM(MOD_LALT),  KC_LPRN,        KC_LBRC,        KC_ESC,         OSL(NUM),       OSM(MOD_LSFT),  KC_SPC,         OSL(VIM),       KC_ENT,         KC_RBRC,        KC_RPRN,        OSM(MOD_RALT),  \
   X,              X,              X,              X,              X,              X,              X,              X,              X,              X,              X,              X               \
 ),
 
