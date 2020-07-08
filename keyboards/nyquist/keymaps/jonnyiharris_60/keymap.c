@@ -123,8 +123,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [VIM] = LAYOUT( \
   KC_ESC,         TD(F9_NO),      TD(F10_MUTE),   TD(F11_VOLD),   TD(F12_VOLU),   _______,        KC_HOME,        KC_PGDN,        KC_PGUP,        KC_END,         _______,        KC_DEL,         \
   _______,        TD(F5_PRSC),    TD(F6_MPRV),    TD(F7_MPLY),    TD(F8_MNXT),    _______,        KC_LEFT,        KC_DOWN,        KC_UP,          KC_RGHT,        _______,        _______,        \
-  KC_LCTL,        TD(F1_PAUS),    TD(F2_RCTL),    TD(F3_NO),      TD(F4_NO),      _______,        _______,        _______,        _______,        _______,        _______,        KC_RCTL,        \
-  _______,        _______,        _______,        KC_LALT,        KC_LGUI,        KC_LSFT,        KC_RSFT,        _______,        KC_RALT,        _______,        _______,        KC_INS,         \
+  _______,        TD(F1_PAUS),    TD(F2_RCTL),    TD(F3_NO),      TD(F4_NO),      _______,        _______,        _______,        _______,        _______,        _______,        _______,        \
+  _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        \
   _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______,        _______         \
 ),
 
